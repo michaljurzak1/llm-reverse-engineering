@@ -1,0 +1,6 @@
+Test files/
+generated_codes/
+out/
+.env
+cpg.bin
+.venv/

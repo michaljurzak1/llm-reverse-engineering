@@ -1,0 +1,11 @@
+2025-04-22 14:37:05 | INFO | Successfully opened file: ../simple_c_program
+2025-04-22 14:37:05 | ERROR | Analysis failed: 
+2025-04-22 14:39:33 | INFO | Successfully opened file: ../simple_c_program
+2025-04-22 14:39:34 | ERROR | Analysis failed: 'function' object has no attribute 'get'
+2025-04-22 14:46:59 | INFO | Successfully opened file: ../simple_c_program
+2025-04-22 15:28:44 | ERROR | Failed to open file: ERROR: Cannot open ../test
+2025-04-22 15:28:44 | ERROR | Analysis failed: ERROR: Cannot open ../test
+2025-04-22 15:29:06 | INFO | Successfully opened file: test
+2025-04-22 16:33:57 | INFO | Successfully opened file: test
+2025-04-22 16:45:58 | INFO | Successfully opened file: test
+2025-04-22 16:46:52 | INFO | Analysis output saved to /mnt/d/University/Studio Projektowe/llm_reverse_engineering/output.md

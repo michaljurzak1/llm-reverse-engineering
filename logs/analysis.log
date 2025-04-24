@@ -1,0 +1,115 @@
+2025-04-23 19:13:26 | INFO | Generated C code: generated_codes/test_0.c
+2025-04-23 19:13:26 | INFO | Generated C code: generated_codes/test_1.c
+2025-04-23 19:13:27 | INFO | Generated C code: generated_codes/test_2.c
+2025-04-23 19:13:29 | INFO | Generated C code: generated_codes/test_3.c
+2025-04-23 19:13:30 | INFO | Generated C code: generated_codes/test_4.c
+2025-04-23 19:13:30 | ERROR | Failed to open file: No R2PIPE_IN or R2PIPE_OUT defined
+2025-04-23 19:13:30 | ERROR | Analysis failed: No R2PIPE_IN or R2PIPE_OUT defined
+2025-04-23 19:16:55 | INFO | Generated C code: generated_codes/test_0.c
+2025-04-23 19:16:55 | INFO | Generated C code: generated_codes/test_1.c
+2025-04-23 19:16:57 | INFO | Generated C code: generated_codes/test_2.c
+2025-04-23 19:16:58 | INFO | Generated C code: generated_codes/test_3.c
+2025-04-23 19:16:59 | INFO | Generated C code: generated_codes/test_4.c
+2025-04-23 19:16:59 | INFO | Compiled binary: generated_codes/test_0
+2025-04-23 19:17:01 | INFO | Successfully opened file: generated_codes/test_0
+2025-04-23 19:17:50 | INFO | Compiled binary: generated_codes/test_0_decompiled
+2025-04-23 19:17:50 | INFO | Compiled binary: generated_codes/test_1
+2025-04-23 19:17:51 | INFO | Successfully opened file: generated_codes/test_1
+2025-04-23 19:18:11 | ERROR | Failed to compile generated_codes/test_1_decompiled.c: Command '['gcc', '-O0', '-I/usr/include/csmith', 'generated_codes/test_1_decompiled.c', '-o', 'generated_codes/test_1_decompiled']' returned non-zero exit status 1.
+2025-04-23 19:18:11 | ERROR | Failed to analyze generated_codes/test_1.c: Command '['gcc', '-O0', '-I/usr/include/csmith', 'generated_codes/test_1_decompiled.c', '-o', 'generated_codes/test_1_decompiled']' returned non-zero exit status 1.
+2025-04-23 19:18:13 | INFO | Compiled binary: generated_codes/test_2
+2025-04-23 19:18:14 | INFO | Successfully opened file: generated_codes/test_2
+2025-04-23 19:18:39 | INFO | Compiled binary: generated_codes/test_2_decompiled
+2025-04-23 19:18:40 | INFO | Compiled binary: generated_codes/test_3
+2025-04-23 19:18:41 | INFO | Successfully opened file: generated_codes/test_3
+2025-04-23 19:19:11 | ERROR | Failed to compile generated_codes/test_3_decompiled.c: Command '['gcc', '-O0', '-I/usr/include/csmith', 'generated_codes/test_3_decompiled.c', '-o', 'generated_codes/test_3_decompiled']' returned non-zero exit status 1.
+2025-04-23 19:19:11 | ERROR | Failed to analyze generated_codes/test_3.c: Command '['gcc', '-O0', '-I/usr/include/csmith', 'generated_codes/test_3_decompiled.c', '-o', 'generated_codes/test_3_decompiled']' returned non-zero exit status 1.
+2025-04-23 19:19:11 | INFO | Compiled binary: generated_codes/test_4
+2025-04-23 19:19:12 | INFO | Successfully opened file: generated_codes/test_4
+2025-04-23 19:19:31 | ERROR | Failed to analyze generated_codes/test_4.c: 1 validation error for decompile
+function_name
+  Field required [type=missing, input_value={'function': 'func_1', 'd...AT44(uVar1,0x86);\n}\n'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+2025-04-23 20:13:52 | INFO | Generated C code: generated_codes/test_0.c
+2025-04-23 20:13:52 | INFO | Compiled binary: generated_codes/test_0
+2025-04-23 20:13:53 | INFO | Successfully opened file: generated_codes/test_0
+2025-04-23 20:14:39 | ERROR | Failed to analyze generated_codes/test_0.c: 'utf-8' codec can't decode byte 0xb5 in position 17: invalid start byte
+2025-04-23 20:21:55 | INFO | Generated C code: generated_codes/test_0.c
+2025-04-23 20:21:56 | INFO | Compiled binary: generated_codes/test_0
+2025-04-23 20:21:57 | INFO | Successfully opened file: generated_codes/test_0
+2025-04-23 20:22:50 | ERROR | Failed to analyze generated_codes/test_0.c: Expecting value: line 1 column 1 (char 0)
+2025-04-23 20:26:27 | INFO | Generated C code: generated_codes/test_0.c
+2025-04-23 20:26:28 | INFO | Compiled binary: generated_codes/test_0
+2025-04-23 20:26:29 | INFO | Successfully opened file: generated_codes/test_0
+2025-04-23 20:27:21 | INFO | Generating CPG for generated_codes/test_0.c
+2025-04-23 20:27:22 | ERROR | Joern failed: Error: Unknown option --full
+Error: Unknown option --json
+Try --help for more information.
+java.lang.RuntimeException: Error while not parsing command line options: `--output,generated_codes/test_0.cpg.json,--full,--json,generated_codes/test_0.c`
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1$$anonfun$1(JoernParse.scala:182)
+	at scala.Option.getOrElse(Option.scala:201)
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1(JoernParse.scala:182)
+	at scala.util.Try$.apply(Try.scala:217)
+	at io.joern.joerncli.JoernParse$.parseConfig(JoernParse.scala:184)
+	at io.joern.joerncli.JoernParse$.run(JoernParse.scala:73)
+	at io.joern.joerncli.JoernParse$.main(JoernParse.scala:19)
+	at io.joern.joerncli.JoernParse.main(JoernParse.scala)
+
+2025-04-23 20:27:22 | ERROR | Failed to generate CPG for generated_codes/test_0.c: Joern failed: Error: Unknown option --full
+Error: Unknown option --json
+Try --help for more information.
+java.lang.RuntimeException: Error while not parsing command line options: `--output,generated_codes/test_0.cpg.json,--full,--json,generated_codes/test_0.c`
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1$$anonfun$1(JoernParse.scala:182)
+	at scala.Option.getOrElse(Option.scala:201)
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1(JoernParse.scala:182)
+	at scala.util.Try$.apply(Try.scala:217)
+	at io.joern.joerncli.JoernParse$.parseConfig(JoernParse.scala:184)
+	at io.joern.joerncli.JoernParse$.run(JoernParse.scala:73)
+	at io.joern.joerncli.JoernParse$.main(JoernParse.scala:19)
+	at io.joern.joerncli.JoernParse.main(JoernParse.scala)
+
+2025-04-23 20:27:23 | INFO | Generating CPG for generated_codes/test_0_decompiled.c
+2025-04-23 20:27:24 | ERROR | Joern failed: Error: Unknown option --full
+Error: Unknown option --json
+Try --help for more information.
+java.lang.RuntimeException: Error while not parsing command line options: `--output,generated_codes/test_0_decompiled.cpg.json,--full,--json,generated_codes/test_0_decompiled.c`
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1$$anonfun$1(JoernParse.scala:182)
+	at scala.Option.getOrElse(Option.scala:201)
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1(JoernParse.scala:182)
+	at scala.util.Try$.apply(Try.scala:217)
+	at io.joern.joerncli.JoernParse$.parseConfig(JoernParse.scala:184)
+	at io.joern.joerncli.JoernParse$.run(JoernParse.scala:73)
+	at io.joern.joerncli.JoernParse$.main(JoernParse.scala:19)
+	at io.joern.joerncli.JoernParse.main(JoernParse.scala)
+
+2025-04-23 20:27:24 | ERROR | Failed to generate CPG for generated_codes/test_0_decompiled.c: Joern failed: Error: Unknown option --full
+Error: Unknown option --json
+Try --help for more information.
+java.lang.RuntimeException: Error while not parsing command line options: `--output,generated_codes/test_0_decompiled.cpg.json,--full,--json,generated_codes/test_0_decompiled.c`
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1$$anonfun$1(JoernParse.scala:182)
+	at scala.Option.getOrElse(Option.scala:201)
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1(JoernParse.scala:182)
+	at scala.util.Try$.apply(Try.scala:217)
+	at io.joern.joerncli.JoernParse$.parseConfig(JoernParse.scala:184)
+	at io.joern.joerncli.JoernParse$.run(JoernParse.scala:73)
+	at io.joern.joerncli.JoernParse$.main(JoernParse.scala:19)
+	at io.joern.joerncli.JoernParse.main(JoernParse.scala)
+
+2025-04-23 20:27:27 | ERROR | Failed to analyze generated_codes/test_0.c: No module named 'scipy'
+2025-04-24 17:28:25 | INFO | Generated C code: generated_codes/test_0.c
+2025-04-24 17:28:26 | INFO | Compiled binary: generated_codes/test_0
+2025-04-24 17:28:26 | INFO | Successfully opened file: generated_codes/test_0
+2025-04-24 17:28:51 | INFO | Generating CPG for generated_codes/test_0.c
+2025-04-24 17:29:04 | ERROR | Failed to export CPG to dot: Command '['joern-export', '--repr', 'all', '--format', 'dot', 'generated_codes/test_0.cpg.bin', '-o', '/tmp/tmpp6bpq646']' returned non-zero exit status 1.
+2025-04-24 17:29:04 | ERROR | Failed to generate CPG for generated_codes/test_0.c: Command '['joern-export', '--repr', 'all', '--format', 'dot', 'generated_codes/test_0.cpg.bin', '-o', '/tmp/tmpp6bpq646']' returned non-zero exit status 1.
+2025-04-24 17:29:04 | INFO | Generating CPG for generated_codes/test_0_decompiled.c
+2025-04-24 17:29:08 | ERROR | Failed to export CPG to dot: Command '['joern-export', '--repr', 'all', '--format', 'dot', 'generated_codes/test_0_decompiled.cpg.bin', '-o', '/tmp/tmpdyfxqamb']' returned non-zero exit status 1.
+2025-04-24 17:29:08 | ERROR | Failed to generate CPG for generated_codes/test_0_decompiled.c: Command '['joern-export', '--repr', 'all', '--format', 'dot', 'generated_codes/test_0_decompiled.cpg.bin', '-o', '/tmp/tmpdyfxqamb']' returned non-zero exit status 1.
+2025-04-24 17:29:10 | ERROR | Error comparing CPGs: No module named 'scipy'
+2025-04-24 17:29:10 | ERROR | Failed to compile generated_codes/test_0_decompiled.c: Command '['gcc', '-O0', '-I/usr/include/csmith', 'generated_codes/test_0_decompiled.c', '-o', 'generated_codes/test_0_decompiled']' returned non-zero exit status 1.
+2025-04-24 17:29:10 | ERROR | Failed to analyze generated_codes/test_0.c: Command '['gcc', '-O0', '-I/usr/include/csmith', 'generated_codes/test_0_decompiled.c', '-o', 'generated_codes/test_0_decompiled']' returned non-zero exit status 1.
+2025-04-24 17:44:24 | INFO | Successfully opened file: simple_c_program
+2025-04-24 17:46:53 | INFO | Successfully opened file: simple_c_program
+2025-04-24 17:47:45 | INFO | Analysis output saved to /mnt/d/University/Studio Projektowe/llm_reverse_engineering/output.md
+2025-04-24 17:56:16 | INFO | Successfully opened file: demo_code/simple_c_program_1
+2025-04-24 17:57:08 | INFO | Analysis output saved to /mnt/d/University/Studio Projektowe/llm_reverse_engineering/output.md
