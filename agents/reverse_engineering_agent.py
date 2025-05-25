@@ -34,6 +34,8 @@ class ReverseEngineeringAgent:
         """Get the system prompt based on analysis mode."""
         base_prompt = """You are an AI Software Analysis & Reverse Engineering Agent specialized in binary analysis and decompilation. Your mission is to decompile and semantically interpret binary files.
 
+Use the language of the user to answer the question.
+        
 REQUIRED OUTPUT FORMAT:
 1. Decompiled C Code:
    - Complete, compilable C source code
