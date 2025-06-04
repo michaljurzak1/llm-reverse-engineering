@@ -10,6 +10,7 @@ from datetime import datetime
 import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.drawing.nx_agraph import graphviz_layout
+from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
 
 from tools.radare2_tools import Radare2Tools
 from agents.reverse_engineering_agent import ReverseEngineeringAgent
@@ -562,7 +563,7 @@ if user_input_text:
         _user_input_text = user_input_text
         
         if st.session_state.explain_in_detail:
-            detailed_prompt = """\n
+            detailed_prompt = """
 After the task is complete, please provide a detailed explanation in a markdown table.
 Required columns: Aspect, Explanation, Evidence
 
@@ -583,44 +584,68 @@ DO NOT include the table in README.md.
         with st.chat_message(st.session_state.messages[-1]["role"]):
             st.write(st.session_state.messages[-1]["content"])
         
-        with st.spinner("Assistant is thinking…"):
-            try:
-                current_tools_list = st.session_state.r2_tools.get_tools() if st.session_state.r2_tools else []
-                agent_executor_instance = st.session_state.agent.create_agent(current_tools_list)
-                
-                agent_response_struct = agent_executor_instance.invoke({
-                    "input": user_input_text,
-                    "history": st.session_state.llm_history[:-1]
-                })
-                
-                assistant_final_response = agent_response_struct["output"]
-                intermediate_tool_calls = agent_response_struct.get("intermediate_steps", [])
-                
-                # Prepare UI message dict for assistant
-                assistant_ui_msg = {"role": "assistant", "content": assistant_final_response}
-                if st.session_state.show_advanced:
-                    assistant_ui_msg["advanced_output"] = {
-                        "raw_agent_response": agent_response_struct
-                    }
-                
-                if intermediate_tool_calls and st.session_state.show_visualization:
-                    if not st.session_state.current_chat_id:
-                        st.session_state.current_chat_id = f"chat_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
-                    
-                    generated_vis_path = create_tool_call_graph(intermediate_tool_calls, st.session_state.current_chat_id)
-                    if generated_vis_path:
-                        assistant_ui_msg["visualization_path"] = generated_vis_path
-                    else:
-                        logger.warning("Visualization generation returned None or path invalid.")
-
-                st.session_state.messages.append(assistant_ui_msg)
-                st.session_state.llm_history.append(AIMessage(content=assistant_final_response))
+        with st.chat_message("assistant"):
+            # Create a container for the assistant's response
+            response_container = st.container()
             
-            except Exception as e_agent_invoke:
-                logger.error(f"Agent invocation error: {e_agent_invoke}", exc_info=True)
-                error_response_text = f"An error occurred during analysis: {str(e_agent_invoke)}"
-                st.session_state.messages.append({"role": "assistant", "content": error_response_text})
-                st.session_state.llm_history.append(AIMessage(content=error_response_text))
+            # Create a container for the thinking spinner
+            thinking_container = st.container()
+            
+            with thinking_container:
+                with st.spinner("Assistant is thinking…"):
+                    try:
+                        current_tools_list = st.session_state.r2_tools.get_tools() if st.session_state.r2_tools else []
+                        
+                        # Create StreamlitCallbackHandler with the thinking container
+                        st_callback = StreamlitCallbackHandler(
+                            parent_container=st.container(),
+                            expand_new_thoughts=True,
+                            collapse_completed_thoughts=True)
+                        
+                        agent_executor_instance = st.session_state.agent.create_agent(current_tools_list)
+                        
+                        agent_response_struct = agent_executor_instance.invoke({
+                            "input": user_input_text,
+                            "history": st.session_state.llm_history[:-1],
+                        },
+                        {"callbacks": [st_callback]})
+                        
+                        assistant_final_response = agent_response_struct["output"]
+                        intermediate_tool_calls = agent_response_struct.get("intermediate_steps", [])
+                        
+                        # Display the final response in the response container
+                        with response_container:
+                            st.write(assistant_final_response)
+                        
+                        # Prepare UI message dict for assistant
+                        assistant_ui_msg = {"role": "assistant", "content": assistant_final_response}
+                        if st.session_state.show_advanced:
+                            assistant_ui_msg["advanced_output"] = {
+                                "raw_agent_response": agent_response_struct
+                            }
+                        
+                        if intermediate_tool_calls and st.session_state.show_visualization:
+                            if not st.session_state.current_chat_id:
+                                st.session_state.current_chat_id = f"chat_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
+                            
+                            generated_vis_path = create_tool_call_graph(intermediate_tool_calls, st.session_state.current_chat_id)
+                            if generated_vis_path:
+                                assistant_ui_msg["visualization_path"] = generated_vis_path
+                                with response_container:
+                                    st.image(generated_vis_path, caption="Tool Call Flow for this response", use_container_width='auto')
+                            else:
+                                logger.warning("Visualization generation returned None or path invalid.")
+
+                        st.session_state.messages.append(assistant_ui_msg)
+                        st.session_state.llm_history.append(AIMessage(content=assistant_final_response))
+                    
+                    except Exception as e_agent_invoke:
+                        logger.error(f"Agent invocation error: {e_agent_invoke}", exc_info=True)
+                        error_response_text = f"An error occurred during analysis: {str(e_agent_invoke)}"
+                        with response_container:
+                            st.error(error_response_text)
+                        st.session_state.messages.append({"role": "assistant", "content": error_response_text})
+                        st.session_state.llm_history.append(AIMessage(content=error_response_text))
 
         # Auto-save chat after each interaction
         if len(st.session_state.messages) > 0 and st.session_state.current_chat_id:

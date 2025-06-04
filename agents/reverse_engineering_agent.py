@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.agents.format_scratchpad.openai_tools import format_to_openai_tool_messages
@@ -6,6 +6,7 @@ from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputP
 from langchain.agents import AgentExecutor
 from langchain_openai import ChatOpenAI
 from langchain_community.chat_models import ChatOllama
+from langchain_core.callbacks import CallbackManager
 import os
 
 class ReverseEngineeringAgent:
@@ -89,8 +90,8 @@ FOCUS ON:
 
         return base_prompt.format(analysis_mode=self.analysis_mode)
 
-    def create_agent(self, tools: List[Any]) -> AgentExecutor:
-        """Create and configure the agent executor."""
+    def create_agent(self, tools: List[Any], callbacks: Optional[List[Any]] = None) -> AgentExecutor:
+        """Create and configure the agent executor with optional callbacks."""
         prompt = ChatPromptTemplate.from_messages([
             ("system", self.system_prompt),
             ("user", "{input}"),
@@ -98,7 +99,13 @@ FOCUS ON:
             MessagesPlaceholder(variable_name="history")
         ])
 
+        # Create callback manager if callbacks are provided
+        callback_manager = CallbackManager(callbacks) if callbacks else None
+
+        # Bind tools and callbacks to LLM
         llm_with_tools = self.llm.bind_tools(tools)
+        if callback_manager:
+            llm_with_tools = llm_with_tools.with_config({"callbacks": callback_manager})
 
         agent = (
             {
@@ -117,7 +124,8 @@ FOCUS ON:
             agent=agent,
             tools=tools,
             verbose=True,
-            return_intermediate_steps=True
+            return_intermediate_steps=True,
+            callbacks=callbacks
         )
 
     def update_history(self, query: str, result: Dict[str, Any]) -> None:
