@@ -13,6 +13,7 @@ A powerful reverse engineering tool that combines LLM capabilities with radare2 
 ## Prerequisites
 
 ### System Requirements
+
 - Python 3.8 or higher
 - radare2 installed on your system
 - Ollama (if using local LLM)
@@ -21,17 +22,20 @@ A powerful reverse engineering tool that combines LLM capabilities with radare2 
 ### Installing radare2
 
 #### Ubuntu/Debian:
+
 ```bash
 sudo apt update
 sudo apt install radare2
 ```
 
 #### macOS:
+
 ```bash
 brew install radare2
 ```
 
 #### Windows (WSL):
+
 ```bash
 sudo apt update
 sudo apt install radare2
@@ -41,6 +45,7 @@ sudo apt install radare2
 
 1. Download and install Ollama from [ollama.ai](https://ollama.ai)
 2. Pull the required model:
+
 ```bash
 ollama pull qwen2.5-coder:7b
 ```
@@ -48,23 +53,27 @@ ollama pull qwen2.5-coder:7b
 ## Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd llm-reverse-engineering
 ```
 
 2. Create and activate a virtual environment:
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
 3. Install dependencies:
+
 ```bash
 pip install -r requirements.txt
 ```
 
 4. Copy the example environment file and configure it:
+
 ```bash
 cp .env.example .env
 # Edit .env with your configuration
@@ -84,11 +93,13 @@ The tool can be configured through environment variables in the `.env` file:
 ## Usage
 
 ### Basic Usage
+
 ```bash
 python main.py <path-to-binary>
 ```
 
 ### Advanced Options
+
 ```bash
 python main.py <path-to-binary> --mode [quick|standard|deep] --llm-type [local|openai]
 ```
@@ -96,11 +107,13 @@ python main.py <path-to-binary> --mode [quick|standard|deep] --llm-type [local|o
 ### Examples
 
 1. Quick analysis with local LLM:
+
 ```bash
 python main.py ./test_binary --mode quick --llm-type local
 ```
 
 2. Deep analysis with OpenAI:
+
 ```bash
 python main.py ./test_binary --mode deep --llm-type openai
 ```
@@ -108,11 +121,13 @@ python main.py ./test_binary --mode deep --llm-type openai
 ### Analysis Modes
 
 - `quick`: Basic analysis with minimal tool usage
+
   - Basic function listing
   - String search
   - Import/export analysis
 
 - `standard`: Comprehensive analysis (default)
+
   - All quick mode features
   - Function decompilation
   - Memory analysis
@@ -144,10 +159,12 @@ llm-reverse-engineering/
 ## Troubleshooting
 
 1. **Radare2 not found**
+
    - Ensure radare2 is installed and in your PATH
    - Verify installation with `r2 -v`
 
 2. **Ollama connection issues**
+
    - Check if Ollama is running: `ollama list`
    - Verify the model is downloaded: `ollama list`
    - Check the OLLAMA_BASE_URL in .env
@@ -163,4 +180,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+This project is licensed under the MIT License - see the LICENSE file for details.

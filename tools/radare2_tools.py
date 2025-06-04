@@ -21,6 +21,63 @@ class Radare2Tools:
             logger.error(f"Failed to open file: {e}")
             raise
 
+    def search_strings(self) -> List[str]:
+        """Search for strings in the binary and return them as a list."""
+        try:
+            strings = self.r2.cmdj("izj")
+            return [s.get('string', '') for s in strings if 'string' in s]
+        except Exception as e:
+            logger.error(f"Failed to search strings: {e}")
+            return []
+
+    def get_imports(self) -> List[str]:
+        """Get all imports from the binary as a list of strings."""
+        try:
+            imports = self.r2.cmdj("iij")
+            return [imp.get('name', '') for imp in imports if 'name' in imp]
+        except Exception as e:
+            logger.error(f"Failed to get imports: {e}")
+            return []
+
+    def get_exports(self) -> List[str]:
+        """Get all exports from the binary as a list of strings."""
+        try:
+            exports = self.r2.cmdj("iEj")
+            return [exp.get('name', '') for exp in exports if 'name' in exp]
+        except Exception as e:
+            logger.error(f"Failed to get exports: {e}")
+            return []
+
+    def get_call_graph(self) -> Dict[str, List[str]]:
+        """Get the call graph of the binary."""
+        try:
+            # Get all functions
+            functions = self.r2.cmdj("aflj")
+            call_graph = {}
+            
+            for func in functions:
+                if 'name' in func:
+                    # Get function references
+                    refs = self.r2.cmdj(f"axtj @ {func['name']}")
+                    call_graph[func['name']] = [
+                        ref.get('refname', '') for ref in refs 
+                        if 'refname' in ref
+                    ]
+            
+            return call_graph
+        except Exception as e:
+            logger.error(f"Failed to get call graph: {e}")
+            return {}
+
+    def get_binary_info(self) -> Dict[str, Any]:
+        """Get general information about the binary."""
+        try:
+            info = self.r2.cmdj("ij")
+            return info
+        except Exception as e:
+            logger.error(f"Failed to get binary info: {e}")
+            return {}
+
     def _create_tools(self) -> List[Any]:
         """Create LangChain tools from Radare2 methods."""
         @tool

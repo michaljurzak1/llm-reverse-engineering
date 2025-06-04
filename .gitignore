@@ -4,3 +4,44 @@ out/
 .env
 cpg.bin
 .venv/
+
+# Logs and history
+logs/
+chat_history/
+
+# Generated files
+visualizations/
+workspace/
+output.md
+*.docx
+demo_code/decompiled_*
+demo_code/*_decompiled*
+
+# Python
+**/__pycache__/
+
+*.pyc
+*.pyo
+*.pyd
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# System files
+.DS_Store
+Thumbs.db

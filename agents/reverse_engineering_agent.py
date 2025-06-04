@@ -6,7 +6,6 @@ from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputP
 from langchain.agents import AgentExecutor
 from langchain_openai import ChatOpenAI
 from langchain_community.chat_models import ChatOllama
-from loguru import logger
 import os
 
 class ReverseEngineeringAgent:
@@ -34,6 +33,8 @@ class ReverseEngineeringAgent:
         """Get the system prompt based on analysis mode."""
         base_prompt = """You are an AI Software Analysis & Reverse Engineering Agent specialized in binary analysis and decompilation. Your mission is to decompile and semantically interpret binary files.
 
+Use the language of the user to answer the question.
+        
 REQUIRED OUTPUT FORMAT:
 1. Decompiled C Code:
    - Complete, compilable C source code
@@ -56,6 +57,22 @@ ANALYSIS STEPS:
 5. Use get_imports() and get_exports() for dependencies
 
 ANALYSIS MODE: {analysis_mode}
+
+When you are asked to fix a compilation error, you should:
+- Check the error message
+- Check the decompiled code
+- Check the chat history
+If necessary:
+- Check the Radare2 tools output and adjust the decompiled code accordingly
+
+README GENERATION GUIDELINES:
+- Generate a comprehensive README.md for the decompiled code
+- Try to not use any tools for this specific task if possible, mostly context from the chat history about the decompiled code
+- Do not include ```markdown``` tags in the README
+- Include as low amount of code as possible
+- Include instructions
+- Do not ask any questions to the user
+- Do not include any other text than the README content
 
 DO NOT:
 - Include unnecessary explanations
