@@ -88,9 +88,10 @@ void handle_client(int client_socket) {
 }
 
 int main() {
-    int server_fd, new_socket;
+    int new_socket;
     struct sockaddr_in address;
     int opt = 1;
+    int addrlen = sizeof(address);
     
     // Register signal handlers
     signal(SIGINT, handle_signal);
@@ -127,19 +128,26 @@ int main() {
     printf("Server listening on port %d...\n", PORT);
     
     // Accept connection
-    if ((new_socket = accept(server_fd, (struct sockaddr*)&address, NULL)) < 0) {
+    if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0) {
         perror("Accept failed");
         exit(EXIT_FAILURE);
     }
     
-    // Handle connection
-    char buffer[1024] = {0};
-    read(new_socket, buffer, 1024);
-    printf("Received: %s\n", buffer);
+    // Print client information
+    char client_ip[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &(address.sin_addr), client_ip, INET_ADDRSTRLEN);
+    printf("Client connected from %s:%d\n", client_ip, ntohs(address.sin_port));
     
-    // Send response
-    const char* response = "Hello from server";
-    send(new_socket, response, strlen(response), 0);
+    // Handle connection
+    char buffer[BUFFER_SIZE] = {0};
+    ssize_t valread = read(new_socket, buffer, BUFFER_SIZE - 1);
+    if (valread > 0) {
+        printf("Received: %s\n", buffer);
+        
+        // Send response
+        const char* response = "Hello from server";
+        send(new_socket, response, strlen(response), 0);
+    }
     
     close(new_socket);
     close(server_fd);

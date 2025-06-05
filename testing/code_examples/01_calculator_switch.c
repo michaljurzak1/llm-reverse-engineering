@@ -1,12 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
 #define MAX_INPUT 100
 
 // Function to validate numeric input
 int is_valid_number(const char* str) {
     if (!str || !*str) return 0;
+    
+    // Remove trailing newline if present
+    char* newline = strchr(str, '\n');
+    if (newline) *newline = '\0';
     
     // Check for optional sign
     if (*str == '+' || *str == '-') str++;
