@@ -24,15 +24,12 @@ void vulnerable_function(char* input) {
     }
 }
 
-// Function with gets() vulnerability
+// Function demonstrating buffer overflow vulnerability
 void gets_vulnerable() {
-    char buffer[BUFFER_SIZE];
-    printf("Enter your name: ");
-    
-    // Unsafe gets() function - vulnerable to buffer overflow
-    gets(buffer);
-    
-    printf("Hello, %s!\n", buffer);
+    char buffer[10];
+    printf("Enter a string: ");
+    fgets(buffer, sizeof(buffer), stdin);  // Use fgets instead of gets
+    printf("You entered: %s\n", buffer);
 }
 
 // Function with sprintf vulnerability
@@ -55,18 +52,14 @@ void strcat_vulnerable(const char* input) {
     printf("Concatenated string: %s\n", buffer);
 }
 
-// Function demonstrating stack frame layout
+// Function demonstrating stack frame
 void stack_frame_demo() {
     int local_var = 42;
-    char buffer[BUFFER_SIZE];
-    int another_var = 123;
+    char buffer[10];
     
-    printf("Address of local_var: %p\n", (void*)&local_var);
-    printf("Address of buffer: %p\n", (void*)buffer);
-    printf("Address of another_var: %p\n", (void*)&another_var);
-    
-    // Demonstrate stack growth
-    printf("Stack grows: %s\n", &local_var > buffer ? "downward" : "upward");
+    // Compare addresses using proper casting
+    printf("Stack grows: %s\n", 
+           (void*)&local_var > (void*)buffer ? "downward" : "upward");
 }
 
 // Function to demonstrate buffer boundary detection

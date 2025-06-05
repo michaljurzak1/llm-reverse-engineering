@@ -1,31 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 // Global variables to demonstrate memory leaks
 int secret_value = 0x12345678;
 char* secret_string = "This is a secret string";
 
+// Safe version using format string
+void safe_printf(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+}
+
 // Function with format string vulnerability
 void vulnerable_printf(const char* user_input) {
-    // Direct use of user input in printf - vulnerable!
-    printf(user_input);
-    printf("\n");
+    // Use safe version instead
+    safe_printf("%s", user_input);
 }
 
 // Function with format string vulnerability and memory leak
 void vulnerable_printf_with_memory(const char* user_input) {
-    char* buffer = (char*)malloc(100);
-    if (!buffer) return;
-    
-    // Copy user input to buffer
-    strcpy(buffer, user_input);
-    
-    // Vulnerable printf
-    printf(buffer);
-    printf("\n");
-    
-    // Memory leak - buffer not freed
+    char buffer[100];
+    strncpy(buffer, user_input, sizeof(buffer) - 1);
+    buffer[sizeof(buffer) - 1] = '\0';
+    safe_printf("%s", buffer);
 }
 
 // Function demonstrating format string attack on stack

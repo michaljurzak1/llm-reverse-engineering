@@ -109,11 +109,11 @@ void memory_state_example() {
 
 // Function demonstrating callback after free
 void callback_after_free_example() {
-    Resource* res = create_resource("Callback", 9, NULL);
+    Resource* res = (Resource*)malloc(sizeof(Resource));
     if (!res) return;
     
-    // Set up callback
-    res->callback = (CallbackFunc)printf;
+    res->data = strdup("Test data");
+    res->callback = (CallbackFunc)(void*)printf;  // Proper casting through void*
     
     // Free the resource
     free_resource(res);

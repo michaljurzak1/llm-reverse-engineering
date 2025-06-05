@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+
+#define SIZE 4
 
 // Inline function with register optimization
 static inline int fast_multiply(int a, int b) {
@@ -93,9 +96,20 @@ static inline int optimized_calc(int x) {
 }
 
 int main() {
-    const int SIZE = 4;
-    int matrix_a[SIZE * SIZE] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-    int matrix_b[SIZE * SIZE] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+    // Initialize matrices with static arrays
+    int matrix_a[SIZE * SIZE];
+    int matrix_b[SIZE * SIZE];
+    
+    // Initialize matrix_a
+    for (int i = 0; i < SIZE * SIZE; i++) {
+        matrix_a[i] = i + 1;
+    }
+    
+    // Initialize matrix_b (identity matrix)
+    for (int i = 0; i < SIZE * SIZE; i++) {
+        matrix_b[i] = (i % (SIZE + 1) == 0) ? 1 : 0;
+    }
+    
     int result[SIZE * SIZE];
     
     // Test fast multiplication

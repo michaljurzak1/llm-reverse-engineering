@@ -25,7 +25,7 @@ void handle_sigint(int sig) {
 }
 
 // Signal handler for SIGCHLD (child process state change)
-void handle_sigchld(int sig) {
+void handle_sigchld(int sig __attribute__((unused))) {
     int status;
     pid_t pid;
     
@@ -44,7 +44,7 @@ void handle_sigchld(int sig) {
 }
 
 // Signal handler for SIGUSR1 (custom event)
-void handle_sigusr1(int sig) {
+void handle_sigusr1(int sig __attribute__((unused))) {
     // Add event to queue if not full
     if ((queue_tail + 1) % MAX_EVENTS != queue_head) {
         event_queue[queue_tail] = event_count++;

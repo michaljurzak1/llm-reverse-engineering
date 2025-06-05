@@ -1,15 +1,13 @@
 #include <iostream>
 #include <vector>
 #include <list>
-#include <deque>
-#include <set>
 #include <map>
+#include <set>
+#include <string>
 #include <algorithm>
 #include <numeric>
-#include <functional>
-#include <string>
-#include <memory>
 #include <type_traits>
+#include <deque>
 
 // Template class for a generic container wrapper
 template<typename Container>
@@ -30,38 +28,50 @@ public:
     // Generic insert method
     template<typename T>
     void insert(const T& value) {
-        if constexpr (std::is_same_v<Container, std::set<typename Container::value_type>>) {
+        if constexpr (std::is_same_v<Container, std::vector<value_type>>) {
+            data.push_back(value);
+        } else if constexpr (std::is_same_v<Container, std::list<value_type>>) {
+            data.push_back(value);
+        } else if constexpr (std::is_same_v<Container, std::set<value_type>>) {
             data.insert(value);
         } else if constexpr (std::is_same_v<Container, std::map<typename Container::key_type, typename Container::mapped_type>>) {
-            data.insert(value);
-        } else {
-            data.push_back(value);
+            if constexpr (std::is_same_v<T, std::pair<typename Container::key_type, typename Container::mapped_type>>) {
+                data.insert(value);
+            }
         }
     }
 
     // Generic find method
     template<typename T>
     iterator find(const T& value) {
-        if constexpr (std::is_same_v<Container, std::set<typename Container::value_type>> ||
-                     std::is_same_v<Container, std::map<typename Container::key_type, typename Container::mapped_type>>) {
-            return data.find(value);
-        } else {
+        if constexpr (std::is_same_v<Container, std::vector<value_type>> || 
+                     std::is_same_v<Container, std::list<value_type>>) {
             return std::find(data.begin(), data.end(), value);
+        } else if constexpr (std::is_same_v<Container, std::set<value_type>>) {
+            return data.find(value);
+        } else if constexpr (std::is_same_v<Container, std::map<typename Container::key_type, typename Container::mapped_type>>) {
+            return data.find(value);
         }
+        return data.end(); // Default case
     }
 
     // Generic sort method
     void sort() {
-        if constexpr (!std::is_same_v<Container, std::set<typename Container::value_type>> &&
-                     !std::is_same_v<Container, std::map<typename Container::key_type, typename Container::mapped_type>>) {
+        if constexpr (std::is_same_v<Container, std::vector<value_type>>) {
             std::sort(data.begin(), data.end());
+        } else if constexpr (std::is_same_v<Container, std::list<value_type>>) {
+            data.sort();
         }
     }
 
     // Generic accumulate method
     template<typename T>
     T accumulate(const T& init) const {
-        return std::accumulate(data.begin(), data.end(), init);
+        if constexpr (std::is_same_v<Container, std::vector<value_type>> ||
+                     std::is_same_v<Container, std::list<value_type>>) {
+            return std::accumulate(data.begin(), data.end(), init);
+        }
+        return init;
     }
 
     // Generic transform method
@@ -73,9 +83,9 @@ public:
     // Generic filter method
     template<typename Predicate>
     void filter(Predicate pred) {
-        if constexpr (std::is_same_v<Container, std::vector<typename Container::value_type>> ||
-                     std::is_same_v<Container, std::list<typename Container::value_type>> ||
-                     std::is_same_v<Container, std::deque<typename Container::value_type>>) {
+        if constexpr (std::is_same_v<Container, std::vector<value_type>> ||
+                     std::is_same_v<Container, std::list<value_type>> ||
+                     std::is_same_v<Container, std::deque<value_type>>) {
             data.erase(
                 std::remove_if(data.begin(), data.end(), pred),
                 data.end()
@@ -96,19 +106,13 @@ public:
 // Template function for printing container contents
 template<typename Container>
 void printContainer(const Container& container, const std::string& name) {
-    std::cout << name << " contents: ";
+    std::cout << name << ": ";
     for (const auto& item : container) {
-        std::cout << item << " ";
-    }
-    std::cout << std::endl;
-}
-
-// Template specialization for map printing
-template<typename Key, typename Value>
-void printContainer(const std::map<Key, Value>& container, const std::string& name) {
-    std::cout << name << " contents: ";
-    for (const auto& [key, value] : container) {
-        std::cout << "{" << key << ": " << value << "} ";
+        if constexpr (std::is_same_v<typename Container::value_type, std::pair<const int, std::string>>) {
+            std::cout << "(" << item.first << ", " << item.second << ") ";
+        } else {
+            std::cout << item << " ";
+        }
     }
     std::cout << std::endl;
 }
@@ -125,7 +129,8 @@ int main() {
         vecWrapper.insert(i);
         listWrapper.insert(static_cast<double>(i) + 0.5);
         setWrapper.insert("str" + std::to_string(i));
-        mapWrapper.insert({i, "value" + std::to_string(i)});
+        std::pair<const int, std::string> pair(i, "value" + std::to_string(i));
+        mapWrapper.insert(pair);
     }
 
     // Print initial contents

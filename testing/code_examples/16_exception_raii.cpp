@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <functional>
 
 // Custom exception classes
 class ResourceException : public std::runtime_error {
@@ -121,6 +122,7 @@ public:
                 std::cerr << "Rollback action failed: " << e.what() << std::endl;
             }
         }
+        rollback_actions.clear();
     }
 };
 

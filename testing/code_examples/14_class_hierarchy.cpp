@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <cmath>
 
 // Base class for shapes
 class Shape {

@@ -66,19 +66,15 @@ void demonstrate_dynamic_dispatch(OperationInfo* ops, int size) {
 }
 
 // Function to demonstrate jump table
-void demonstrate_jump_table(OperationInfo* ops, int size) {
-    const char* test_operations[] = {"add", "multiply", "subtract", "divide", "invalid"};
-    int a = 20, b = 4;
+void demonstrate_jump_table() {
+    // Array of function pointers
+    int (*test_operations[])(int, int) = {
+        add, subtract, multiply, divide
+    };
     
-    printf("\nDemonstrating jump table:\n");
-    for (int i = 0; i < sizeof(test_operations) / sizeof(test_operations[0]); i++) {
-        Operation op = find_operation(test_operations[i], ops, size);
-        if (op) {
-            int result = execute_operation(op, a, b);
-            printf("%s(%d, %d) = %d\n", test_operations[i], a, b, result);
-        } else {
-            printf("Operation '%s' not found\n", test_operations[i]);
-        }
+    // Test each operation
+    for (size_t i = 0; i < sizeof(test_operations) / sizeof(test_operations[0]); i++) {
+        printf("Operation %zu: %d\n", i, test_operations[i](10, 5));
     }
 }
 
@@ -88,7 +84,7 @@ int main() {
     
     // Demonstrate both dynamic dispatch and jump table
     demonstrate_dynamic_dispatch(operations, size);
-    demonstrate_jump_table(operations, size);
+    demonstrate_jump_table();
     
     return 0;
 } 
