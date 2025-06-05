@@ -320,8 +320,9 @@ except NameError:
 cwd_path_str = st.sidebar.text_input("Analysis Directory", value=str(default_cwd.resolve()))
 cwd = Path(cwd_path_str)
 
+# Add back the missing settings
 llm_mode_sidebar = st.sidebar.radio("LLM Mode", ["openai","local"], index=0 if st.session_state.get("llm_mode_agent", "openai") == "openai" else 1)
-st.session_state.llm_mode_agent = llm_mode_sidebar # Store selection for agent re-init
+st.session_state.llm_mode_agent = llm_mode_sidebar
 
 st.session_state.show_visualization = st.sidebar.checkbox("Show Tool Call Visualization", value=st.session_state.get("show_visualization", True))
 st.session_state.show_advanced = st.sidebar.checkbox("Show Advanced Details", value=st.session_state.get("show_advanced", False))
@@ -329,41 +330,57 @@ st.session_state.generate_readme = st.sidebar.checkbox("Auto-Generate README on 
 st.session_state.explain_in_detail = st.sidebar.checkbox("Explain in Detail", value=st.session_state.get("explain_in_detail", False), 
     help="When enabled, the model will provide detailed explanations of the decompilation process in a markdown table format")
 
-try:
-    if cwd.exists() and cwd.is_dir():
-        files = sorted([f.name for f in cwd.iterdir() if f.is_file() and not f.name.startswith('.')])
-    else:
-        files = ["(Invalid Directory)"]; st.sidebar.error(f"Directory not found: {cwd}")
-    
-    choice = st.sidebar.selectbox("Choose file to analyze", files if files else ["(No files in directory)"])
+# Add analysis mode selection
+analysis_mode = st.sidebar.radio(
+    "Analysis Mode",
+    ["Single File", "Project Directory"],
+    help="Choose whether to analyze a single binary or a complete project directory"
+)
 
-    if st.sidebar.button("Analyze Selected File", type="primary"):
-        if choice and choice not in ["(Invalid Directory)", "(No files in directory)"]:
-            st.session_state.current_file = str(cwd / choice)
-            st.session_state.selected_file = choice
-            
-            initial_assistant_content = f"Ready to analyze `{choice}`. What would you like to do?"
-            st.session_state.messages = [{"role": "assistant", "content": initial_assistant_content}]
-            st.session_state.llm_history = [AIMessage(content=initial_assistant_content)] # Reset LLM history
-            
-            st.session_state.tool_calls_display = []
-            st.session_state.compilation_attempts = 0
-            st.session_state.current_chat_id = f"chat_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
-            
-            try:
-                st.session_state.r2_tools = Radare2Tools(st.session_state.current_file, "standard")
-                st.session_state.agent = ReverseEngineeringAgent(st.session_state.llm_mode_agent, "standard")
-                logger.info(f"New analysis for {choice}. Chat ID: {st.session_state.current_chat_id}. Agent history initialized.")
-            except Exception as e_init:
-                logger.error(f"Error initializing agent/tools for {choice}: {e_init}", exc_info=True)
-                st.error(f"Failed to initialize analysis tools for {choice}: {e_init}")
-                st.session_state.agent = None; st.session_state.r2_tools = None
-            st.rerun()
-        else:
-            st.sidebar.error("Please select a valid file from the directory.")
-except Exception as e:
-    st.sidebar.error(f"File system error: {e}")
-    logger.error(f"Sidebar file error: {e}", exc_info=True)
+if cwd.exists() and cwd.is_dir():
+    if analysis_mode == "Single File":
+        files = sorted([f.name for f in cwd.iterdir() if f.is_file() and not f.name.startswith('.')])
+        choice = st.sidebar.selectbox("Choose file to analyze", files if files else ["(No files in directory)"])
+        selected_path = cwd / choice if choice and choice not in ["(Invalid Directory)", "(No files in directory)"] else None
+    else:  # Project Directory mode
+        dirs = sorted([d.name for d in cwd.iterdir() if d.is_dir() and not d.name.startswith('.')])
+        dir_choice = st.sidebar.selectbox("Choose project directory", dirs if dirs else ["(No directories found)"])
+        selected_path = cwd / dir_choice if dir_choice and dir_choice not in ["(No directories found)"] else None
+else:
+    files = ["(Invalid Directory)"]
+    st.sidebar.error(f"Directory not found: {cwd}")
+    selected_path = None
+
+if st.sidebar.button("Analyze Selected", type="primary"):
+    if selected_path and selected_path.exists():
+        st.session_state.current_file = str(selected_path)
+        st.session_state.selected_file = selected_path.name
+        
+        initial_assistant_content = f"Ready to analyze {'project directory' if analysis_mode == 'Project Directory' else 'file'} `{selected_path.name}`. What would you like to do?"
+        st.session_state.messages = [{"role": "assistant", "content": initial_assistant_content}]
+        st.session_state.llm_history = [AIMessage(content=initial_assistant_content)]
+        
+        st.session_state.tool_calls_display = []
+        st.session_state.compilation_attempts = 0
+        st.session_state.current_chat_id = f"chat_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
+        
+        try:
+            # Initialize Radare2Tools with the selected path and analysis mode
+            st.session_state.r2_tools = Radare2Tools(
+                str(selected_path), 
+                "standard",
+                is_project_dir=(analysis_mode == "Project Directory")
+            )
+            st.session_state.agent = ReverseEngineeringAgent(st.session_state.llm_mode_agent, "standard")
+            logger.info(f"New analysis for {selected_path.name}. Chat ID: {st.session_state.current_chat_id}. Agent history initialized.")
+        except Exception as e_init:
+            logger.error(f"Error initializing agent/tools for {selected_path.name}: {e_init}", exc_info=True)
+            st.error(f"Failed to initialize analysis tools for {selected_path.name}: {e_init}")
+            st.session_state.agent = None
+            st.session_state.r2_tools = None
+        st.rerun()
+    else:
+        st.sidebar.error("Please select a valid file or directory to analyze.")
 
 # Chat History Management
 st.sidebar.title("Chat Sessions")
