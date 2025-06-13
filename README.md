@@ -79,6 +79,63 @@ cp .env.example .env
 # Edit .env with your configuration
 ```
 
+## Docker Installation
+
+You can also run the application using Docker, which eliminates the need for local installation of dependencies.
+
+### Running from Docker Hub
+
+To run the container directly from Docker Hub, use:
+
+```bash
+docker run -p 8501:8501 \
+          -v $(pwd)/input:/app/input \
+          -e OPENAI_REV_ENG_API_KEY=your-api-key \
+          michaljurzak/llm-reverse-engineering:latest
+```
+
+Where `$(pwd)` input is your current directory mounted into the /app directory.
+
+Please either paste your OpenAI API key or use from your environment variable (Windows: `$env:OPENAI_API_KEY`, Linux/MacOS: `$OPENAI_API_KEY`)
+
+Access the Streamlit interface at http://localhost:8501
+
+### Building the Docker Image
+
+```bash
+docker build -t reverse-engineering-tool .
+```
+
+### Running with Docker
+
+Basic usage:
+
+```bash
+docker run -p 8501:8501 -v $(pwd)/input:/app/input -e OPENAI_REV_ENG_API_KEY=your-api-key llm-reverse-engineering
+```
+
+You can use your environment variable by using `$OPENAI_API_KEY` as a variable passed in a command in Linux/MacOS. in Windows use: `$env:OPENAI_API_KEY`
+
+Advanced usage with environment variables and output directory:
+
+```bash
+docker run -p 8501:8501 \
+          -v $(pwd)/input:/app/input \
+          -v $(pwd)/output:/app/output \
+          -e OPENAI_REV_ENG_API_KEY=your-api-key \
+          -e LOG_LEVEL=INFO \
+          llm-reverse-engineering
+```
+
+After running the container, you can access the Streamlit interface at http://localhost:8501
+
+### Docker Volume Mapping
+
+- `/app/input`: Mount your input directory containing binary files
+- `/app/output`: Mount your output directory for analysis results
+- `/app/logs`: Mount your logs directory (optional)
+- `/app/generated_codes`: Mount your generated codes directory (optional)
+
 ## Configuration
 
 The tool can be configured through environment variables in the `.env` file:
